@@ -66,22 +66,23 @@ exports.stripeIntents = functions.https.onRequest( async ( request, response) =>
 
     let total = 0;
 
-    let menu = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().menu );
 
-
-    /**
-     * GET CUSTOMER's STRIPE SECRET KEY FROM THE DB
-     * @param  String!  customerId
-     *
-     * @return String! Restaurant Stripe Secret Key
-     */
-    let customerStripeSK = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().stripeSK );
-
-
-    cors( request, response, () => {
+    cors( request, response, async () => {
 
 
         const order = request.body;
+
+
+        let menu = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().menu );
+
+        /**
+         * GET CUSTOMER's STRIPE SECRET KEY FROM THE DB
+         * @param  String!  customerId
+         *
+         * @return String! Restaurant Stripe Secret Key
+         */
+        let customerStripeSK = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().stripeSK );
+
 
         // CALCULATES THE TOTAL TO PAY
         // QUERY THE MENU SO WE MAKE SURE THAT WE ARE CHARGING THE RIGHT AMOUNT
@@ -147,16 +148,16 @@ exports.stripeIntentsCapture = functions.https.onRequest( async ( request, respo
     const PAYMENT_ID = query.paymentId;
 
 
-    /**
-     * GET CUSTOMER's STRIPE SECRETE KEY FROM THE DB
-     * @param  String!  customerId
-     *
-     * @return String! Restaurant Stripe Secret Key
-     */
-    let customerStripeSK = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().stripeSK );
+    cors( request, response, async () => {
 
+         /**
+         * GET CUSTOMER's STRIPE SECRETE KEY FROM THE DB
+         * @param  String!  customerId
+         *
+         * @return String! Restaurant Stripe Secret Key
+         */
+        let customerStripeSK = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().stripeSK );
 
-    cors( request, response, () => {
 
         // PROCESS THE PAYMENT VIE STRIPE
         const stripe = require('stripe')(customerStripeSK);
@@ -193,17 +194,18 @@ exports.stripeIntentsCancel = functions.https.onRequest( async ( request, respon
 
     const PAYMENT_ID = query.paymentId;
 
-
-    /**
-     * GET CUSTOMER's STRIPE SECRETE KEY FROM THE DB
-     * @param  String!  customerId
-     *
-     * @return String! Restaurant Stripe Secret Key
-     */
-    let customerStripeSK = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().stripeSK );
+    cors( request, response, async () => {
 
 
-    cors( request, response, () => {
+        /**
+         * GET CUSTOMER's STRIPE SECRETE KEY FROM THE DB
+         * @param  String!  customerId
+         *
+         * @return String! Restaurant Stripe Secret Key
+         */
+        let customerStripeSK = await db.doc(`/customers/${CUSTOMER_ID}`).get().then( snapshot => snapshot.data().stripeSK );
+
+
 
         // PROCESS THE PAYMENT VIE STRIPE
         const stripe = require('stripe')(customerStripeSK);
