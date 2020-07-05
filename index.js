@@ -18,8 +18,6 @@ const cors = require('cors')({ origin : true });
 exports.getRestaurant =  functions.https.onRequest(async (request, response) => {
 
 
-    let origin = request.get('origin');
-
     let query = request.query;
 
     const CUSTOMER_ID = query.customerId;
